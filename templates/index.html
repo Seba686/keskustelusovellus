@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+    <div class="header">
+        <h1>Keskustelusovellus</h1>
+    </div>
+    <div class="content">
+        {% for thread in threads %}
+        {{thread.title}}
+        <br>
+        {{thread.content}}
+        <br>
+        {{thread.created}}
+        <br>
+        <hr>
+        {% endfor %}
+        <a href="/new">Lähetä viesti</a>
+    </div>
+    </body>
+</html>
