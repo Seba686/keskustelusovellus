@@ -1,9 +1,44 @@
 .content {
     margin: auto;
-    max-width: 45em;
+    max-width: 50em;
     font-family: "Helvetica", "Arial", sans-serif;
+    padding: 2em 1em;
+}
+
+body {
+    background-color: #2b2a33;
+    color: #fbfbfe;
 }
 
 h1 {
-    color: red;
+    color: #c73333;
+}
+
+.header {
+    background-color: #afeeee;
+    font-weight: bold;
+    padding: 1em 1em;
+    font-size: 1em;
+    border-radius: 0.5em;
+}
+
+.posts {
+    background-color: #5b5a63;
+    border-radius: 0.3em;
+    padding: 0.7em 0.7em;
+    margin-bottom: 0.7em;
+}
+
+.post-title {
+    margin-bottom: -1.2em;
+    padding: 0em;
+}
+
+.post-content {
+    margin-top: 0.2em;
+}
+
+.post-meta {
+    margin-bottom: 0.7em;
+    font-size: 0.8em;
 }

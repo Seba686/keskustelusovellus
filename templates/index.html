@@ -1,26 +1,33 @@
 <!DOCTYPE html>
+{% extends "layout.html" %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/static/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Document</title>
+    <title>{% block title %}Etusivu{% endblock %}</title>
 </head>
 <body>
+{% block content %}
     <div class="header">
-        <h1>Keskustelusovellus</h1>
+    <h1>Keskustelusovellus</h1>
     </div>
     <div class="content">
         {% for thread in threads %}
-        {{thread.title}}
-        <br>
-        {{thread.content}}
-        <br>
-        {{thread.created}}
-        <br>
-        <hr>
+        <div class="posts">
+          <div class="post-title">
+          <h2>{{thread.title}}</h2>
+          </div>
+          <div class="post-meta">
+            {{thread.created.strftime("%Y-%m-%d")}}
+            </div>
+          <div class="post-content">
+          <p>{{thread.content}}</p>
+          </div>
+        </div>
         {% endfor %}
         <a href="/new">Lähetä viesti</a>
     </div>
     </body>
+{% endblock %}
 </html>
