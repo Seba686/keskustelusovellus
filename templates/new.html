@@ -1,20 +1,13 @@
-<!DOCTYPE html>
 {% extends "layout.html" %}
-<link rel="stylesheet" href="/static/style.css">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<body>
+{% block title %}Uusi viesti{% endblock %}
 {% block content %}
-    <div class="header">
-        <h1>Keskustelusovellus</h1>
-    </div>
-    <form action="/send" method="POST">
-        Otsikko: <br>
-        <textarea name="title" rows="3", cols="40"></textarea>
-        <br>
-        Viesti: <br>
-        <textarea name="content" rows="3" cols="40"></textarea>
-        <br>
-        <input type="submit" value="Lähetä">
-    </form>
+<form action="/send" method="POST">
+  Otsikko: <br>
+  <textarea name="title" rows="3", cols="40"></textarea>
+  <br>
+  Viesti: <br>
+  <textarea name="content" rows="3" cols="40"></textarea>
+  <br>
+  <input type="submit" value="Lähetä">
+</form>
 {% endblock %}
-</body>
