@@ -5,3 +5,9 @@ CREATE TABLE threads (
     link TEXT,
     created TIMESTAMP
 );
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username TEXT,
+    password TEXT
+);

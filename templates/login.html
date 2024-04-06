@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block title %}Kirjaudu sisään{% endblock %}
+{% block content %}
+<h2>Kirjaudu sisään</h2>
+<form action="/login" method="POST">
+    <p>Käyttäjätunnus:<br>
+    <input type="text" name="username"></p>
+    <p>Salasana:<br>
+    <input type="password" name="password"></p>
+    <input type="submit" value="Kirjaudu">
+</form>
+{% if error %}
+<p class="error">Väärä käyttäjätunnus tai salasana</p>
+{% endif %}
+<p>Voit luoda uuden käyttäjätilin <a href="/register">tästä.</a></p>
+{% endblock %}
