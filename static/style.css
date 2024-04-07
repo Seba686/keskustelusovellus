@@ -18,26 +18,20 @@ h1 {
     font-weight: 800;
 }
 
+h2 {
+    margin-bottom: 0.5em;
+    margin-top: 0em;
+}
+
 .header {
     background-color: #afeeee;
     padding: 1em 1em;
     font-size: 1em;
     border-radius: 0.5em;
-    position: relative;
 }
 
 .heading {
     padding: 0.5em;
-}
-
-.header-login {
-    padding: 0.5em;
-    position: absolute;
-    background-color: #5b5a63;
-    right: 0.5em;
-    top: 5.5em;
-    border-radius: 0.3em;
-    font-weight: 500;
 }
 
 .posts {
@@ -48,7 +42,7 @@ h1 {
 }
 
 .post-title {
-    margin-bottom: -1.2em;
+    margin: 0em;
     padding: 0em;
 }
 
@@ -79,7 +73,16 @@ h1 {
     color: rgb(0, 210, 0);
 }
 
-.button {
-    color: inherit;
-    text-decoration: none;
+.topnav {
+    background-color: #333;
+    overflow: hidden;
+  }
+  
+.topnav a {
+float: left;
+color: #f2f2f2;
+text-align: center;
+padding: 14px 16px;
+text-decoration: none;
+font-size: 17px;
 }

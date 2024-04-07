@@ -9,13 +9,17 @@
 <body>
 <div class="header">
     <div class="heading">
-        <a href="/" class="button"><h1>Keskustelusovellus</h1></a>
+        <h1>Keskustelusovellus</h1>
     </div>
-    <div class="header-login">
+    <div class="topnav">
         {% if session.username %}
-        <a href="/logout" class="button">Kirjaudu ulos</a>
+        <a href="/">Etusivu</a>
+        <a href="/new">Uusi lanka</a>
+        <a href="/logout">Kirjaudu ulos</a>
+        <a href="#profile">{{session.username}}</a> <!--TODO: Add profiles page-->
         {% else %}
-        <a href="/login" class="button">Kirjaudu sisään</a>
+        <a href="/">Etusivu</a>
+        <a href="/login">Kirjaudu sisään</a>
         {% endif %}
     </div>
 </div>
