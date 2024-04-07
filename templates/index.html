@@ -2,17 +2,18 @@
 {% block title %}Etusivu{% endblock %}
 {% block content %}
 {% for thread in threads %}
-<div class="posts">
-<div class="post-title">
-<h2>{{thread.title}}</h2>
-</div>
-<div class="post-meta">
-    <div class="time">{{thread.created.strftime("%Y-%m-%d")}}</div>
-    <div class="user">{{thread.username}}</div>
-</div>
-<div class="post-content">
-{{thread.content}}
-</div>
+<div class="post">
+    <div class="post-title">
+    <h2>{{thread.title}}</h2>
+    </div>
+    <div class="post-meta">
+        <div class="time">{{thread.created.strftime("%Y-%m-%d")}}</div>
+        <div class="user">{{thread.username}}</div>
+    </div>
+    <div class="post-content">
+    {{thread.content}}
+    </div>
+    <a href={{ url_for("thread", id=thread.id) }}>Kommentit</a>
 </div>
 {% endfor %}
 {% endblock %}

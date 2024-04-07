@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}Kommentit{% endblock %}
+{% block content %}
+<div class="post-title">
+<h2>{{thread.title}}</h2>
+</div>
+<div class="post-meta">
+    <div class="time">{{thread.created.strftime("%Y-%m-%d")}}</div>
+    <div class="user">{{thread.username}}</div>
+</div>
+{% for comment in comments %}
+<div class="post">
+    <div class="post-meta">
+        <div class="time">{{comment.created.strftime("%Y-%m-%d")}}</div>
+        <div class="user">{{comment.username}}</div>
+    </div>
+    <div class="post-content">
+        {{comment.content}}
+    </div>
+</div>
+{% endfor %}
+{% if session.username %}
+<form action="/new_comment" method="POST">
+    <span class="form">Lisää kommentti</span> <br>
+    <textarea spellcheck="false" name="content" rows="3", cols="40"></textarea>
+    <br>
+    <input type="submit" value="Lähetä">
+    <input type="hidden" name="thread_id" value="{{ thread.id }}">
+</form>
+{% else %}
+Kirjaudu sisään lisätäksesi kommentin.
+{% endif %}
+{% endblock %}

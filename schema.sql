@@ -12,3 +12,11 @@ CREATE TABLE threads (
     link TEXT,
     created TIMESTAMP
 );
+
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    thread_id INTEGER REFERENCES threads,
+    user_id INTEGER REFERENCES users,
+    content TEXT,
+    created TIMESTAMP
+);

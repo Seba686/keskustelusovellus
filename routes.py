@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, session
+from flask import render_template, request, redirect, session, url_for
 
 from app import app
 import posts, users
@@ -8,9 +8,9 @@ def index():
     threads = posts.get_threads()
     return render_template("index.html", threads=threads) 
 
-@app.route("/new")
-def new():
-    return render_template("new.html")
+@app.route("/new_thread")
+def new_thread():
+    return render_template("new_thread.html")
 
 @app.route("/send", methods=["POST"])
 def send():
@@ -47,3 +47,17 @@ def register():
         confirm_password = request.form["confirm_password"]
         status = users.register(username, password, confirm_password)
         return render_template("register.html", status=status)
+    
+@app.route("/new_comment", methods=["POST"])
+def new_comment():
+    thread_id = request.form["thread_id"]
+    user_id = session["user_id"]
+    content = request.form["content"]
+    posts.new_comment(thread_id, user_id, content)
+    return redirect(url_for("thread", id=thread_id))
+
+@app.route("/thread/<int:id>")
+def thread(id):
+    thread = posts.get_thread(id)
+    comments = posts.get_comments(id)
+    return render_template("thread.html", thread=thread, comments=comments)
