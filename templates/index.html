@@ -7,7 +7,8 @@
 <h2>{{thread.title}}</h2>
 </div>
 <div class="post-meta">
-{{thread.created.strftime("%Y-%m-%d")}}
+    <div class="time">{{thread.created.strftime("%Y-%m-%d")}}</div>
+    <div class="user">{{thread.username}}</div>
 </div>
 <div class="post-content">
 {{thread.content}}

@@ -14,9 +14,10 @@ def new():
 
 @app.route("/send", methods=["POST"])
 def send():
-    content = request.form["content"]
+    user_id = session["user_id"]
     title = request.form["title"]
-    posts.new_thread(title, content)
+    content = request.form["content"]
+    posts.new_thread(user_id, title, content)
     return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])

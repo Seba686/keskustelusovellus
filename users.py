@@ -4,7 +4,7 @@ from sqlalchemy import text
 from db import db
 
 def verify_login(username, password):
-    sql = text("SELECT password FROM users WHERE username=:username")
+    sql = text("SELECT id, password FROM users WHERE username=:username")
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
     if not user:
@@ -12,14 +12,12 @@ def verify_login(username, password):
     hash_value = user.password
     if check_password_hash(hash_value, password):
         session["username"] = username
+        session["user_id"] = user.id
         return True
     return False
 
 def register(username, password, confirm_password):
-    # TODO: refactor this
-    sql = text("SELECT id FROM users WHERE username=:username")
-    result = db.session.execute(sql, {"username":username})
-    user = result.fetchone()
+    user = get_user_id(username)
     if user:
         return "käyttäjätunnus otettu"
     if len(username) < 3:
@@ -37,3 +35,9 @@ def register(username, password, confirm_password):
     db.session.execute(sql, {"username":username, "password":hash_value})
     db.session.commit()
     return "success"
+
+def get_user_id(username):
+    sql = text("SELECT id FROM users WHERE username=:username")
+    result = db.session.execute(sql, {"username":username})
+    user = result.fetchone()
+    return user
