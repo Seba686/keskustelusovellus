@@ -2,11 +2,11 @@
 {% block title %}Uusi viesti{% endblock %}
 {% block content %}
 <form action="/send" method="POST">
-  Otsikko: <br>
-  <textarea name="title" rows="3", cols="40"></textarea>
+  <span class="form">Otsikko</span> <br>
+  <textarea spellcheck="false" name="title" rows="3", cols="40"></textarea>
   <br>
-  Viesti: <br>
-  <textarea name="content" rows="3" cols="40"></textarea>
+  <span class="form">Viesti</span> <br>
+  <textarea spellcheck="false" name="content" rows="3" cols="40"></textarea>
   <br>
   <input type="submit" value="Lähetä">
 </form>
