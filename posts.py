@@ -34,10 +34,16 @@ def new_thread(user_id, title, content):
 
 def get_comments(thread_id):
     sql = text("SELECT U.username, C.content, C.created FROM \
-               comments C, users U WHERE C.user_id=U.id AND thread_id=:id")
+               comments C, users U WHERE C.user_id=U.id AND C.thread_id=:id")
     result = db.session.execute(sql, {"id":thread_id})
     comments = result.fetchall()
     return comments
+
+def get_comment_count(thread_id):
+    sql = text("SELECT COUNT(*) FROM comments WHERE thread_id=:id")
+    result = db.session.execute(sql, {"id":thread_id})
+    count = result.fetchone()[0]
+    return count
 
 def new_comment(thread_id, user_id, content):
     errors = []

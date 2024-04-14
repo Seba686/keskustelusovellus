@@ -62,4 +62,6 @@ def thread(id):
         errors = posts.new_comment(thread_id, user_id, comment_content)
     thread = posts.get_thread(id)
     comments = posts.get_comments(id)
-    return render_template("thread.html", thread=thread, comments=comments, errors=errors, comment_content=comment_content)
+    comment_count = posts.get_comment_count(id)
+    return render_template("thread.html", thread=thread, comments=comments, \
+                           errors=errors, comment_content=comment_content, comment_count=comment_count)

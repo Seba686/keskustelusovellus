@@ -1,13 +1,21 @@
 {% extends "layout.html" %}
 {% block title %}Kommentit{% endblock %}
 {% block content %}
-<div class="post-title">
-<h2>{{thread.title}}</h2>
+<div class="post">
+    <div class="post-title">
+    <h2>{{thread.title}}</h2>
+    </div>
+    <div class="post-meta">
+        <div class="time">{{thread.created.strftime("%Y-%m-%d")}}</div>
+        <div class="user">{{thread.username}}</div>
+    </div>
+    <div class="post-content">{{thread.content}}</div>
 </div>
-<div class="post-meta">
-    <div class="time">{{thread.created.strftime("%Y-%m-%d")}}</div>
-    <div class="user">{{thread.username}}</div>
-</div>
+{% if comment_count == 1 %}
+<h3>1 komentti</h3>
+{% else %}
+<h3>{{comment_count}} komenttia</h3>
+{% endif %}
 {% for comment in comments %}
 <div class="post">
     <div class="post-meta">
