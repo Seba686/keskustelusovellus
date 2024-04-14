@@ -8,17 +8,20 @@ def index():
     threads = posts.get_threads()
     return render_template("index.html", threads=threads) 
 
-@app.route("/new_thread")
+@app.route("/new_thread", methods=["GET", "POST"])
 def new_thread():
-    return render_template("new_thread.html")
+    if request.method == "GET":
+        return render_template("new_thread.html")
+    else:
+        user_id = session["user_id"]
+        title = request.form["title"]
+        content = request.form["content"]
+        status = posts.new_thread(user_id, title, content)
+        if not status[0]:
+            return redirect(url_for("thread", id=status[1]))
+        else:
+            return render_template("new_thread.html", title=title, content=content, errors=status[0])
 
-@app.route("/send", methods=["POST"])
-def send():
-    user_id = session["user_id"]
-    title = request.form["title"]
-    content = request.form["content"]
-    posts.new_thread(user_id, title, content)
-    return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -40,24 +43,23 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
-        return render_template("register.html")
+        return render_template("register.html", get=True)
     else:
         username = request.form["username"]
         password = request.form["password"]
         confirm_password = request.form["confirm_password"]
-        status = users.register(username, password, confirm_password)
-        return render_template("register.html", status=status)
-    
-@app.route("/new_comment", methods=["POST"])
-def new_comment():
-    thread_id = request.form["thread_id"]
-    user_id = session["user_id"]
-    content = request.form["content"]
-    posts.new_comment(thread_id, user_id, content)
-    return redirect(url_for("thread", id=thread_id))
+        errors = users.register(username, password, confirm_password)
+        return render_template("register.html", errors=errors)
 
-@app.route("/thread/<int:id>")
+@app.route("/thread/<int:id>", methods=["GET", "POST"])
 def thread(id):
+    errors = None
+    comment_content = None
+    if request.method == "POST":
+        thread_id = request.form["thread_id"]
+        user_id = session["user_id"]
+        comment_content = request.form["content"]
+        errors = posts.new_comment(thread_id, user_id, comment_content)
     thread = posts.get_thread(id)
     comments = posts.get_comments(id)
-    return render_template("thread.html", thread=thread, comments=comments)
+    return render_template("thread.html", thread=thread, comments=comments, errors=errors, comment_content=comment_content)

@@ -16,10 +16,21 @@ def get_thread(thread_id):
     return thread
 
 def new_thread(user_id, title, content):
-    # TODO: check input
-    sql = text("INSERT INTO threads (user_id, title, content, created) VALUES (:user_id, :title, :content, NOW())")
-    db.session.execute(sql, {"user_id":user_id, "title":title, "content":content})
-    db.session.commit()
+    errors = []
+    thread_id = None
+    if not title:
+        errors.append("Otsikko ei voi olla tyhjä.")
+    elif len(title) > 120:
+        errors.append("Otsikon enimmäispituus on 120 merkkiä.")
+    if len(content) > 5000:
+        errors.append("Viestin enimmäispituus on 5000 merkkiä.")
+    if not errors:
+        sql = text("INSERT INTO threads (user_id, title, content, created) \
+                VALUES (:user_id, :title, :content, NOW()) RETURNING id")
+        result = db.session.execute(sql, {"user_id":user_id, "title":title, "content":content})
+        db.session.commit()
+        thread_id = result.fetchone()[0]
+    return errors, thread_id
 
 def get_comments(thread_id):
     sql = text("SELECT U.username, C.content, C.created FROM \
@@ -29,7 +40,16 @@ def get_comments(thread_id):
     return comments
 
 def new_comment(thread_id, user_id, content):
-    sql = text("INSERT INTO comments (thread_id, user_id, content, created) \
-               VALUES (:thread_id, :user_id, :content, NOW())")
-    db.session.execute(sql, {"thread_id":thread_id, "user_id":user_id, "content":content})
-    db.session.commit()
+    errors = []
+    if not content:
+        errors.append("Kommentti ei voi olla tyhjä.")
+    if len(content) > 5000:
+        errors.append("Kommentin enimmäispituus on 5000 merkkiä.")
+    if not errors:
+        sql = text("INSERT INTO comments (thread_id, user_id, content, created) \
+                VALUES (:thread_id, :user_id, :content, NOW())")
+        db.session.execute(sql, {"thread_id":thread_id, "user_id":user_id, "content":content})
+        db.session.commit()
+        return errors
+    else:
+        return errors

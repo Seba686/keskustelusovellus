@@ -1,13 +1,16 @@
 {% extends "layout.html" %}
 {% block title %}Uusi viesti{% endblock %}
 {% block content %}
-<form action="/send" method="POST">
+<form action="/new_thread" method="POST">
   <span class="form">Otsikko</span> <br>
-  <textarea spellcheck="false" name="title" rows="3", cols="40"></textarea>
+  <textarea spellcheck="false" name="title" rows="3", cols="50" minlength="1" maxlength="120" required>{{title}}</textarea>
   <br>
   <span class="form">Viesti</span> <br>
-  <textarea spellcheck="false" name="content" rows="3" cols="40"></textarea>
+  <textarea spellcheck="false" name="content" rows="8" cols="70" maxlength="5000">{{content}}</textarea>
   <br>
   <input type="submit" value="Lähetä">
 </form>
+{% for error in errors %}
+<p class="error">Virhe: {{error}}</p>
+{% endfor %}
 {% endblock %}

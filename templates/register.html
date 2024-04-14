@@ -13,11 +13,13 @@
 </form>
 <p>Käyttäjätunnuksen tulee olla 3-20 merkkiä pitkä.</p>
 <p>Salasanan on oltava vähintään 8 merkkiä pitkä.</p>
-{% if status %}
-    {% if status == "success" %}
+{% if errors %}
+    {% for error in errors %}
+    <p class="error">Virhe: {{error}}</p>
+    {% endfor %}
+{% else %}
+    {% if not get %}
     <p class="success">Rekisteröityminen onnistui.<p><a href="/login">Kirjaudu sisään.</a>
-    {% else %}
-    <p class="error">Virhe: {{status}}.</p>
     {% endif %}
 {% endif %}
 {% endblock %}

@@ -20,13 +20,18 @@
 </div>
 {% endfor %}
 {% if session.username %}
-<form action="/new_comment" method="POST">
-    <span class="form">Lisää kommentti</span> <br>
-    <textarea spellcheck="false" name="content" rows="3", cols="40"></textarea>
-    <br>
-    <input type="submit" value="Lähetä">
-    <input type="hidden" name="thread_id" value="{{ thread.id }}">
-</form>
+    <form action="/thread/{{thread.id}}" method="POST">
+        <span class="form">Lisää kommentti</span> <br>
+        <textarea spellcheck="false" name="content" rows="3", cols="40">{% if errors %}{{comment_content}}{% endif %}</textarea>
+        <br>
+        <input type="submit" value="Lähetä">
+        <input type="hidden" name="thread_id" value="{{ thread.id }}">
+    </form>
+    {% if errors %}
+        {% for error in errors %}
+        <p class="error">Virhe: {{error}}</p>
+        {% endfor %}
+    {% endif %}
 {% else %}
 Kirjaudu sisään lisätäksesi kommentin.
 {% endif %}
