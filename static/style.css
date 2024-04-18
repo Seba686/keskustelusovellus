@@ -14,7 +14,6 @@ h1 {
 
 h2 {
     margin-bottom: 0.5em;
-    margin-top: 0em;
 }
 
 .header {
@@ -46,23 +45,25 @@ h2 {
     padding: 0em;
 }
 
-.post-content {
-    margin-top: 0.2em;
+.post-meta {
+    margin: 0em;
+    padding: 0em;
+    color: rgb(113, 173, 181);
 }
 
-.post-meta {
-    margin-bottom: 0.7em;
-    font-size: 0.9em;
+.post-content {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
 
 .user {
     display: inline-block;
-    padding-left: 0.2em;
+    padding-left: 0.1em;
 }
 
 .time {
     display: inline-block;
-    padding-right: 0.2em;
+    padding-right: 0.1em;
 }
 
 .error {
@@ -79,12 +80,12 @@ h2 {
   }
   
 .topnav a {
-float: left;
-color: #f2f2f2;
-text-align: center;
-padding: 14px 16px;
-text-decoration: none;
-font-size: 17px;
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
 }
 
 textarea {
@@ -101,7 +102,6 @@ textarea {
 }
 
 input[type=submit] {
-    font-family: "Lato", sans-serif;
     background-color: #5b5a63;
     color: #fbfbfe;
     border-color: rgb(28, 28, 28);
@@ -114,6 +114,19 @@ input[type=submit]:hover {
     background-color: #4d4d54;
 }
 
+input[type=file] {
+    margin-top: 1em;
+}
+
 a {
     color: inherit;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0.5em;
 }

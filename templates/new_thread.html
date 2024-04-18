@@ -1,13 +1,16 @@
 {% extends "layout.html" %}
 {% block title %}Uusi viesti{% endblock %}
 {% block content %}
-<form action="/new_thread" method="POST">
+<form action="/new_thread" method="POST", enctype=multipart/form-data>
   <span class="form">Otsikko</span> <br>
   <textarea spellcheck="false" name="title" rows="3", cols="50" minlength="1" maxlength="120" required>{{title}}</textarea>
   <br>
   <span class="form">Viesti</span> <br>
   <textarea spellcheck="false" name="content" rows="8" cols="70" maxlength="5000">{{content}}</textarea>
   <br>
+  <span class="form">Lisää kuva</span> <br>
+  <input type="file" name="image">
+  <p>Sallitut tiedostomuodot ovat png, jpg, jpeg ja gif. Kuvan maksimikoko on 4 MB.</p>
   <input type="submit" value="Lähetä">
 </form>
 {% for error in errors %}

@@ -9,6 +9,7 @@ CREATE TABLE threads (
     user_id INTEGER REFERENCES users,
     title TEXT,
     content TEXT,
+    image TEXT,
     link TEXT,
     created TIMESTAMP
 );

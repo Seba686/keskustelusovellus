@@ -16,7 +16,11 @@ def new_thread():
         user_id = session["user_id"]
         title = request.form["title"]
         content = request.form["content"]
-        status = posts.new_thread(user_id, title, content)
+        if "image" in request.files:
+            image = request.files["image"]
+        else:
+            image = None
+        status = posts.new_thread(user_id, title, content, image)
         if not status[0]:
             return redirect(url_for("thread", id=status[1]))
         else:
