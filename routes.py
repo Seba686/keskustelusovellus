@@ -3,6 +3,8 @@ from flask import render_template, request, redirect, session, url_for
 from app import app
 import posts, users
 
+from itertools import zip_longest
+
 @app.route("/")
 def index():
     threads = posts.get_threads()
@@ -10,9 +12,11 @@ def index():
 
 @app.route("/new_thread", methods=["GET", "POST"])
 def new_thread():
+    topics = posts.get_topics()
     if request.method == "GET":
-        return render_template("new_thread.html")
+        return render_template("new_thread.html", topics=topics)
     else:
+        topic = request.form["topic"]
         user_id = session["user_id"]
         title = request.form["title"]
         content = request.form["content"]
@@ -20,11 +24,11 @@ def new_thread():
             image = request.files["image"]
         else:
             image = None
-        status = posts.new_thread(user_id, title, content, image)
+        status = posts.new_thread(topic, user_id, title, content, image)
         if not status[0]:
             return redirect(url_for("thread", id=status[1]))
         else:
-            return render_template("new_thread.html", title=title, content=content, errors=status[0])
+            return render_template("new_thread.html", title=title, content=content, errors=status[0], topics=topics)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -69,3 +73,18 @@ def thread(id):
     comment_count = posts.get_comment_count(id)
     return render_template("thread.html", thread=thread, comments=comments, \
                            errors=errors, comment_content=comment_content, comment_count=comment_count)
+
+@app.route("/topic/<string:topic>")
+def topic(topic):
+    threads = posts.get_threads_by_topic(topic)
+    return render_template("topic.html", threads=threads, topic=topic)
+
+@app.route("/topics", methods=["GET", "POST"])
+def topics():
+    errors = None
+    if request.method =="POST":
+        topic = request.form["topic"]
+        errors = posts.new_topic(topic)
+    topics = posts.get_topics()
+    topics = list(zip_longest(*(iter(topics),) * 3)) # Convert list into list of 3-tuples
+    return render_template("topics.html", errors=errors, topics=topics)

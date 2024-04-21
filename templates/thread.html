@@ -6,6 +6,7 @@
     <h2>{{thread.title}}</h2>
     </div>
     <div class="post-meta">
+        <div>Aihe: <a class="topic" href="{{url_for('topic', topic=thread.topic)}}">{{thread.topic}}</a></div>
         <div class="time">{{thread.created.strftime("%Y-%m-%d")}}</div>
         <div class="user">{{thread.username}}</div>
     </div>

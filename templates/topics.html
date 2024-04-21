@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}Aiheet{% endblock %}
+{% block content %}
+<h2>Selaa aiheita</h2>
+    <table>
+        {% for tuple in topics %}
+        <tr>
+            {% for topic in tuple %}
+                <td>
+                    {% if topic %}
+                    <a href="{{url_for('topic', topic=topic)}}">{{topic}}</a>
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+<h2>Luo uusi aihe</h2>
+{% if session.username %}
+    <form action="/topics" method="POST">
+        <p>Aihe<br>
+        <input type="text" name="topic" minlength="3" maxlength="30" required></p>
+        <input type="submit" value="Luo">
+    </form>
+    {% if errors %}
+        {% for error in errors %}
+            <p class="error">Virhe: {{error}}</p>
+        {% endfor %}
+    {% endif %}
+{% else %}
+<p>Kirjaudu sisään luodaksesi uuden aiheen.</p>
+{% endif %}
+{% endblock %}

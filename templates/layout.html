@@ -12,13 +12,13 @@
         <h1>Keskustelusovellus</h1>
     </div>
     <div class="topnav">
-        {% if session.username %}
         <a href="/">Etusivu</a>
+        <a href="/topics">Aiheet</a>
+        {% if session.username %}
         <a href="/new_thread">Uusi lanka</a>
         <a href="/logout">Kirjaudu ulos</a>
         <a href="#profile">{{session.username}}</a> <!--TODO: Add profiles page-->
         {% else %}
-        <a href="/">Etusivu</a>
         <a href="/login">Kirjaudu sisään</a>
         {% endif %}
     </div>

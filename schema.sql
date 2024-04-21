@@ -4,8 +4,20 @@ CREATE TABLE users (
     password TEXT
 );
 
+CREATE TABLE topics (
+    id SERIAL PRIMARY KEY,
+    topic TEXT UNIQUE
+);
+
+CREATE TABLE subscriptions (
+    id SERIAL PRIMARY KEY,
+    topic_id INTEGER REFERENCES topics,
+    user_id INTEGER REFERENCES users
+);
+
 CREATE TABLE threads (
     id SERIAL PRIMARY KEY,
+    topic_id INTEGER REFERENCES topics,
     user_id INTEGER REFERENCES users,
     title TEXT,
     content TEXT,

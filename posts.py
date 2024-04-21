@@ -6,19 +6,20 @@ import os
 import app
 
 def get_threads():
-    result = db.session.execute(text("SELECT T.id, U.username, T.title, T.content, T.image, T.created FROM \
-                                     threads T, users U WHERE T.user_id=U.id ORDER BY created DESC"))
+    result = db.session.execute(text("SELECT Th.id, A.topic, U.username, Th.title, Th.content, Th.image, Th.created FROM \
+                                     threads Th, users U, topics A WHERE Th.user_id=U.id AND Th.topic_id=A.id\
+                                     ORDER BY Th.created DESC"))
     threads = result.fetchall()
     return threads
 
 def get_thread(thread_id):
-    sql = text("SELECT T.id, U.username, T.title, T.content, T.image, T.created FROM \
-                threads T, users U WHERE T.user_id=U.id AND T.id=:id")
+    sql = text("SELECT T.id, A.topic, U.username, T.title, T.content, T.image, T.created FROM \
+                threads T, users U, topics A WHERE T.user_id=U.id AND T.id=:id AND A.id=T.topic_id")
     result = db.session.execute(sql, {"id":thread_id})
     thread = result.fetchone()
     return thread
 
-def new_thread(user_id, title, content, image):
+def new_thread(topic, user_id, title, content, image):
     errors = []
     thread_id = None
     if not title:
@@ -27,18 +28,28 @@ def new_thread(user_id, title, content, image):
         errors.append("Otsikon enimmäispituus on 120 merkkiä.")
     if len(content) > 5000:
         errors.append("Viestin enimmäispituus on 5000 merkkiä.")
+    if not topic:
+        errors.append("Aihe on pakollinen.")
+    else:
+        sql = text("SELECT id FROM topics WHERE topic=:topic")
+        topic_id = db.session.execute(sql, {"topic":topic}).fetchone()
+        if not topic_id:
+            errors.append("Aihetta ei löytynyt. Luo uusi aihe.")
+        else:
+            topic_id = topic_id[0]
     if image and not allowed_file(image.filename):
         errors.append("Väärä tiedostomuoto.")
     if not errors:
         if image:
             filename = secure_filename(image.filename)
-            filename = filename + str(time.time())
+            filename = str(time.time())+ filename
             image.save(os.path.join(app.UPLOAD_FOLDER, filename))
         else:
             filename = None
-        sql = text("INSERT INTO threads (user_id, title, content, image, created) \
-                VALUES (:user_id, :title, :content, :image, NOW()) RETURNING id")
-        result = db.session.execute(sql, {"user_id":user_id, "title":title, "content":content, "image":filename})
+        sql = text("INSERT INTO threads (topic_id, user_id, title, content, image, created) \
+                VALUES (:topic_id, :user_id, :title, :content, :image, NOW()) RETURNING id")
+        result = db.session.execute(sql, {"topic_id":topic_id, "user_id":user_id, "title":title, \
+                                          "content":content, "image":filename})
         db.session.commit()
         thread_id = result.fetchone()[0]
     return errors, thread_id
@@ -69,6 +80,34 @@ def new_comment(thread_id, user_id, content):
         db.session.commit()
     return errors
 
+def new_topic(topic):
+    errors = []
+    if len(topic) > 30:
+        errors.append("Aiheen enimmäispituus on 30 merkkiä.")
+    elif len(topic) < 3:
+        errors.append("Aiheen minimipituus on 3 merkkiä.")
+    sql = text("SELECT id FROM topics WHERE topic=:topic")
+    found = db.session.execute(sql, {"topic":topic}).fetchone()
+    if found:
+        errors.append("Aihe on jo luotu.")
+    if not errors:
+        sql = text("INSERT INTO topics (topic) VALUES (:topic)")
+        db.session.execute(sql, {"topic":topic})
+        db.session.commit()
+    return errors
+
+def get_threads_by_topic(topic):
+    sql = text("SELECT Th.id, U.username, Th.title, Th.content, Th.image, Th.created FROM \
+                threads Th, users U, topics A WHERE Th.user_id=U.id AND A.topic=:topic AND \
+                Th.topic_id=A.id ORDER BY Th.created DESC")
+    result = db.session.execute(sql, {"topic":topic})
+    threads = result.fetchall()
+    return threads
+
+def get_topics():
+    result = db.session.execute(text("SELECT topic FROM topics"))
+    topics = result.fetchall()
+    return [topic[0] for topic in topics]
     
 def allowed_file(filename):
     return '.' in filename and \
