@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, session, url_for
+from flask import render_template, request, redirect, session, url_for, abort
 
 from app import app
 import posts, users
@@ -16,6 +16,8 @@ def new_thread():
     if request.method == "GET":
         return render_template("new_thread.html", topics=topics)
     else:
+        if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
         topic = request.form["topic"]
         user_id = session["user_id"]
         title = request.form["title"]
@@ -64,6 +66,8 @@ def thread(id):
     errors = None
     comment_content = None
     if request.method == "POST":
+        if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
         thread_id = request.form["thread_id"]
         user_id = session["user_id"]
         comment_content = request.form["content"]
@@ -83,6 +87,8 @@ def topic(topic):
 def topics():
     errors = None
     if request.method =="POST":
+        if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
         topic = request.form["topic"]
         errors = posts.new_topic(topic)
     topics = posts.get_topics()

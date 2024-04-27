@@ -23,6 +23,7 @@
   <p>Sallitut tiedostomuodot ovat png, jpg, jpeg ja gif. Kuvan maksimikoko on 4 MB.</p>
   <p>*Pakollinen kenttä. Voit luoda uuden aiheen <a href="/topics">tästä</a>.</p>
   <input type="submit" value="Lähetä">
+  <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
 </form>
 {% for error in errors %}
 <p class="error">Virhe: {{error}}</p>

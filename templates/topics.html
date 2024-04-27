@@ -21,6 +21,7 @@
         <p>Aihe<br>
         <input type="text" name="topic" minlength="3" maxlength="30" required></p>
         <input type="submit" value="Luo">
+        <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
     </form>
     {% if errors %}
         {% for error in errors %}
