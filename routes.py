@@ -12,6 +12,8 @@ def index():
 
 @app.route("/new_thread", methods=["GET", "POST"])
 def new_thread():
+    if "username" not in session:
+        return render_template("error.html")
     topics = posts.get_topics()
     if request.method == "GET":
         return render_template("new_thread.html", topics=topics)
