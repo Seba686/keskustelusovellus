@@ -1,31 +1,33 @@
 {% extends "layout.html" %}
-{% block title %}Uusi viesti{% endblock %}
+{% block title %}Uusi lanka{% endblock %}
 {% block content %}
 <form action="/new_thread" method="POST", enctype=multipart/form-data>
   <span class="form">Otsikko*</span> <br>
-  <textarea spellcheck="false" name="title" rows="3", cols="50" minlength="1" maxlength="120" required>{{title}}</textarea>
+  <textarea spellcheck="false" name="title" rows="3", cols="50" minlength="1" maxlength="120" required>
+    {{ title }}
+  </textarea>
   <br>
   <span class="form">Aihe*</span>
   <br>
   <input list="topics" name="topic">
   <datalist id="topics">
     {% for topic in topics %}
-    <option value="{{topic}}" />
+    <option value="{{ topic }}" />
     {% endfor %}
   </datalist>
   <br>
   <br>
   <span class="form">Viesti</span> <br>
-  <textarea spellcheck="false" name="content" rows="8" cols="70" maxlength="5000">{{content}}</textarea>
+  <textarea spellcheck="false" name="content" rows="8" cols="70" maxlength="5000">{{ content }}</textarea>
   <br>
   <span class="form">Lisää kuva</span> <br>
   <input type="file" name="image">
   <p>Sallitut tiedostomuodot ovat png, jpg, jpeg ja gif. Kuvan maksimikoko on 4 MB.</p>
   <p>*Pakollinen kenttä. Voit luoda uuden aiheen <a href="/topics">tästä</a>.</p>
   <input type="submit" value="Lähetä">
-  <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 {% for error in errors %}
-<p class="error">Virhe: {{error}}</p>
+<p class="error">Virhe: {{ error }}</p>
 {% endfor %}
 {% endblock %}

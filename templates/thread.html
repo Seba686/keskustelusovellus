@@ -3,48 +3,52 @@
 {% block content %}
 <div class="post">
     <div class="post-title">
-    <h2>{{thread.title}}</h2>
+    <h2>{{ thread.title }}</h2>
     </div>
     <div class="post-meta">
-        <div>Aihe: <a class="topic" href="{{url_for('topic', topic=thread.topic)}}">{{thread.topic}}</a></div>
-        <div class="time">{{thread.created.strftime("%Y-%m-%d")}}</div>
-        <div class="user">{{thread.username}}</div>
+        <div>Aihe: <a class="topic" href="{{ url_for('topic', topic=thread.topic) }}">{{ thread.topic }}</a></div>
+        <div class="time">{{ thread.created.strftime("%Y-%m-%d") }}</div>
+        <div class="user">{{ thread.username }}</div>
     </div>
     <div class="post-content">
         {% if thread.image %}
-            <img src="../static/images/{{thread.image}}" alt="kuva">
+            <img src="../static/images/{{ thread.image }}" alt="kuva">
         {% endif %}
-        {{thread.content}}
+        {{ thread.content }}
     </div>
 </div>
 {% if comment_count == 1 %}
 <h3>1 komentti</h3>
 {% else %}
-<h3>{{comment_count}} komenttia</h3>
+<h3>{{ comment_count }} komenttia</h3>
 {% endif %}
 {% for comment in comments %}
 <div class="post">
     <div class="post-meta">
-        <div class="time">{{comment.created.strftime("%Y-%m-%d")}}</div>
-        <div class="user">{{comment.username}}</div>
+        <div class="time">{{ comment.created.strftime("%Y-%m-%d") }}</div>
+        <div class="user">{{ comment.username }}</div>
     </div>
     <div class="post-content">
-        {{comment.content}}
+        {{ comment.content }}
     </div>
 </div>
 {% endfor %}
 {% if session.username %}
-    <form action="/thread/{{thread.id}}" method="POST">
+    <form action="/thread/{{ thread.id }}" method="POST">
         <span class="form">Lisää kommentti</span> <br>
-        <textarea spellcheck="false" name="content" rows="3", cols="40">{% if errors %}{{comment_content}}{% endif %}</textarea>
+        <textarea spellcheck="false" name="content" rows="3", cols="40">
+            {% if errors %}
+                {{ comment_content }}
+            {% endif %}
+        </textarea>
         <br>
         <input type="submit" value="Lähetä">
-        <input type="hidden" name="thread_id" value="{{thread.id}}">
-        <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
+        <input type="hidden" name="thread_id" value="{{ thread.id }}">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
     {% if errors %}
         {% for error in errors %}
-        <p class="error">Virhe: {{error}}</p>
+        <p class="error">Virhe: {{ error }}</p>
         {% endfor %}
     {% endif %}
 {% else %}

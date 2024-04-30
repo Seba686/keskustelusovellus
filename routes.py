@@ -3,8 +3,6 @@ from flask import render_template, request, redirect, session, url_for, abort
 from app import app
 import posts, users
 
-from itertools import zip_longest
-
 @app.route("/")
 def index():
     threads = posts.get_threads()
@@ -17,35 +15,31 @@ def new_thread():
     topics = posts.get_topics()
     if request.method == "GET":
         return render_template("new_thread.html", topics=topics)
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
+    topic = request.form["topic"]
+    user_id = session["user_id"]
+    title = request.form["title"]
+    content = request.form["content"]
+    if "image" in request.files:
+        image = request.files["image"]
     else:
-        if session["csrf_token"] != request.form["csrf_token"]:
-            abort(403)
-        topic = request.form["topic"]
-        user_id = session["user_id"]
-        title = request.form["title"]
-        content = request.form["content"]
-        if "image" in request.files:
-            image = request.files["image"]
-        else:
-            image = None
-        status = posts.new_thread(topic, user_id, title, content, image)
-        if not status[0]:
-            return redirect(url_for("thread", id=status[1]))
-        else:
-            return render_template("new_thread.html", title=title, content=content, errors=status[0], topics=topics)
+        image = None
+    status = posts.new_thread(topic, user_id, title, content, image)
+    if not status[0]:
+        return redirect(url_for("thread", id=status[1]))
+    return render_template("new_thread.html", title=title, content=content, errors=status[0], topics=topics)
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
         return render_template("login.html", error=False)
-    else:
-        username = request.form["username"]
-        password = request.form["password"]
-        if users.verify_login(username, password):
-            return redirect("/") #TODO redirect to previous page
-        else:
-            return render_template("login.html", error=True)
+    username = request.form["username"]
+    password = request.form["password"]
+    if users.verify_login(username, password):
+        return redirect("/") # TODO redirect to previous page
+    return render_template("login.html", error=True)
         
 @app.route("/logout")
 def logout():
@@ -56,12 +50,11 @@ def logout():
 def register():
     if request.method == "GET":
         return render_template("register.html", get=True)
-    else:
-        username = request.form["username"]
-        password = request.form["password"]
-        confirm_password = request.form["confirm_password"]
-        errors = users.register(username, password, confirm_password)
-        return render_template("register.html", errors=errors)
+    username = request.form["username"]
+    password = request.form["password"]
+    confirm_password = request.form["confirm_password"]
+    errors = users.register(username, password, confirm_password)
+    return render_template("register.html", errors=errors)
 
 @app.route("/thread/<int:id>", methods=["GET", "POST"])
 def thread(id):
@@ -77,8 +70,9 @@ def thread(id):
     thread = posts.get_thread(id)
     comments = posts.get_comments(id)
     comment_count = posts.get_comment_count(id)
-    return render_template("thread.html", thread=thread, comments=comments, \
-                           errors=errors, comment_content=comment_content, comment_count=comment_count)
+    return render_template("thread.html", thread=thread, comments=comments,
+                           errors=errors, comment_content=comment_content,
+                           comment_count=comment_count)
 
 @app.route("/topic/<string:topic>")
 def topic(topic):
@@ -94,5 +88,4 @@ def topics():
         topic = request.form["topic"]
         errors = posts.new_topic(topic)
     topics = posts.get_topics()
-    topics = list(zip_longest(*(iter(topics),) * 3)) # Convert list into list of 3-tuples
     return render_template("topics.html", errors=errors, topics=topics)

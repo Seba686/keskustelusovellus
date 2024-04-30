@@ -15,11 +15,11 @@
 <p>Salasanan on oltava vähintään 8 merkkiä pitkä.</p>
 {% if errors %}
     {% for error in errors %}
-    <p class="error">Virhe: {{error}}</p>
+    <p class="error">Virhe: {{ error }}</p>
     {% endfor %}
 {% else %}
     {% if not get %}
-    <p class="success">Rekisteröityminen onnistui.<p><a href="/login">Kirjaudu sisään.</a>
+        <p class="success">Rekisteröityminen onnistui.<p><a href="/login">Kirjaudu sisään.</a>
     {% endif %}
 {% endif %}
 {% endblock %}

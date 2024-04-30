@@ -7,17 +7,17 @@
     <h2>{{thread.title}}</h2>
     </div>
     <div class="post-meta">
-        <div>Aihe: <a class="topic" href="{{url_for('topic', topic=thread.topic)}}">{{thread.topic}}</a></div>
-        <div class="time">{{thread.created.strftime("%Y-%m-%d")}}</div>
-        <div class="user">{{thread.username}}</div>
+        <div>Aihe: <a class="topic" href="{{ url_for('topic', topic=thread.topic) }}">{{ thread.topic }}</a></div>
+        <div class="time">{{ thread.created.strftime("%Y-%m-%d") }}</div>
+        <div class="user">{{ thread.username }}</div>
     </div>
     <div class="post-content">
-    {% if thread.image %}
-        <img src="../static/images/{{thread.image}}" alt="kuva">
-    {% endif %}
-    {{thread.content}}
+        {% if thread.image %}
+            <img src="../static/images/{{ thread.image }}" alt="kuva">
+        {% endif %}
+        {{ thread.content }}
     </div>
-    <a href="{{url_for('thread', id=thread.id)}}">Kommentit</a>
+    <a href="{{ url_for('thread', id=thread.id) }}">Kommentit</a>
 </div>
 {% endfor %}
 {% endblock %}

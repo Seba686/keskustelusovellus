@@ -1,9 +1,11 @@
-from werkzeug.security import check_password_hash, generate_password_hash
-from flask import session
-from sqlalchemy import text
-from db import db
 from secrets import token_hex
+from werkzeug.security import check_password_hash, generate_password_hash # Used for secure 
+                                                                          # handling of passwords
+from sqlalchemy import text # Required for SQL commands.
+from flask import session
+from db import db
 
+# Check that correct credentials were given.
 def verify_login(username, password):
     sql = text("SELECT id, password FROM users WHERE username=:username")
     result = db.session.execute(sql, {"username":username})
@@ -18,7 +20,18 @@ def verify_login(username, password):
         return True
     return False
 
+# Register a new user.
 def register(username, password, confirm_password):
+    errors = verify_login(username, password, confirm_password)
+    if not errors:
+        hash_value = generate_password_hash(password)
+        sql = text("INSERT INTO users (username, password) VALUES (:username, :password)")
+        db.session.execute(sql, {"username":username, "password":hash_value})
+        db.session.commit()
+    return errors
+
+# Verify register information.
+def verify_registration(username, password, confirm_password):
     user = get_user_id(username)
     errors = []
     if user:
@@ -33,13 +46,9 @@ def register(username, password, confirm_password):
         errors.append("Salasana on liian lyhyt.")
     if len(password) > 100:
         errors.append("Salasanan enimmäispituus on 100 merkkiä.")
-    if not errors:
-        hash_value = generate_password_hash(password)
-        sql = text("INSERT INTO users (username, password) VALUES (:username, :password)")
-        db.session.execute(sql, {"username":username, "password":hash_value})
-        db.session.commit()
     return errors
 
+# Get the user_id given a username.
 def get_user_id(username):
     sql = text("SELECT id FROM users WHERE username=:username")
     result = db.session.execute(sql, {"username":username})

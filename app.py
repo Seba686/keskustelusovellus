@@ -1,5 +1,5 @@
-from flask import Flask
 from os import getenv
+from flask import Flask
 
 UPLOAD_FOLDER = "./static/images"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
