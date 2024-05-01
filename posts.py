@@ -1,6 +1,5 @@
 import time
 import os
-from itertools import zip_longest
 from sqlalchemy.sql import text # Required for SQL commands.
 from werkzeug.utils import secure_filename # Securely handle filenames from users.
 from db import db
@@ -125,7 +124,6 @@ def get_topics():
     result = db.session.execute(text("SELECT topic FROM topics"))
     topics = result.fetchall()
     topics = [topic[0] for topic in topics]
-    topics = list(zip_longest(*(iter(topics), ) * 3)) # Convert list into list of 3-tuples
     return topics
 
 # Verify that the file extension is supported. 

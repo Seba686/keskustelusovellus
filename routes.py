@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, session, url_for, abort
-
+from itertools import zip_longest
 from app import app
 import posts, users
 
@@ -88,4 +88,5 @@ def topics():
         topic = request.form["topic"]
         errors = posts.new_topic(topic)
     topics = posts.get_topics()
+    topics = list(zip_longest(*(iter(topics), ) * 3)) # Convert list into list of 3-tuples
     return render_template("topics.html", errors=errors, topics=topics)

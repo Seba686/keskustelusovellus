@@ -22,7 +22,7 @@ def verify_login(username, password):
 
 # Register a new user.
 def register(username, password, confirm_password):
-    errors = verify_login(username, password, confirm_password)
+    errors = verify_registration(username, password, confirm_password)
     if not errors:
         hash_value = generate_password_hash(password)
         sql = text("INSERT INTO users (username, password) VALUES (:username, :password)")
