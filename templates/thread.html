@@ -56,7 +56,7 @@ Kirjaudu sisään lisätäksesi kommentin.
     <p>Aihe: <a href="{{ url_for('topic', topic=thread.topic) }}">{{ thread.topic }}</a></p>
     <p>Tätä aihetta seuraa {{ subscriber_count }} {% if subscriber_count == 1 %}käyttäjä{% else %}käyttäjää{% endif %}.</p>
     {% if session.user_id %}
-    <p>{% if subscribed %}Seuraat aihetta.{% else %}Et seuraa aihetta{% endif %}</p>
+    <p>{% if subscribed %}Seuraat aihetta.{% else %}Et seuraa aihetta.{% endif %}</p>
     <form action="/toggle_subscription" method="POST">
         <input type="hidden" name="user" value="{{ session.user_id }}">
         <input type="hidden" name="topic" value="{{ thread.topic_id }}">

@@ -113,3 +113,11 @@ def toggle_subscription():
     user_id = request.form["user"]
     topic_handler.toggle_subscription(topic_id, user_id)
     return redirect(request.referrer)
+
+@app.route("/home")
+def home():
+    if "username" not in session:
+        return render_template("error.html")
+    threads = posts.get_home_posts(session["user_id"])
+    topic_count = topic_handler.get_topic_count(session["user_id"])
+    return render_template("home.html", threads=threads, topic_count=topic_count)

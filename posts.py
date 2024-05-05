@@ -88,7 +88,7 @@ def new_comment(thread_id, user_id, content):
         errors.append("Kommentin enimmäispituus on 5000 merkkiä.")
     if not errors:
         sql = text("INSERT INTO comments (thread_id, user_id, content, created) \
-                VALUES (:thread_id, :user_id, :content, NOW())")
+                    VALUES (:thread_id, :user_id, :content, NOW())")
         db.session.execute(sql, {"thread_id":thread_id, "user_id":user_id, "content":content})
         db.session.commit()
     return errors
@@ -106,3 +106,12 @@ def get_threads_by_topic(topic):
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in app.ALLOWED_EXTENSIONS
+
+# Get posts with topics the user is subscribed to.
+def get_home_posts(user_id):
+    sql = text("SELECT * FROM (SELECT T.id, T.topic_id, A.topic, U.username, T.title, T.content, T.image, T.created \
+               FROM threads T, users U, topics A WHERE T.user_id=U.id AND A.id=T.topic_id) AS A JOIN \
+               (SELECT topic_id FROM subscriptions WHERE user_id=:user_id AND subscribed=TRUE) AS B \
+               ON A.topic_id=B.topic_id ORDER BY A.created DESC")
+    result = db.session.execute(sql, {"user_id":user_id}).fetchall()
+    return result

@@ -54,3 +54,10 @@ def subscribed(topic_id, user_id):
                WHERE topic_id=:topic_id AND user_id=:user_id), FALSE)")
     result = db.session.execute(sql, {"topic_id":topic_id, "user_id":user_id})
     return result.fetchone()[0]
+
+# Get number of topics a user is subscribed to.
+def get_topic_count(user_id):
+    sql = text("SELECT COUNT(id) FROM subscriptions WHERE \
+               user_id=:user_id AND subscribed = TRUE")
+    result = db.session.execute(sql, {"user_id":user_id})
+    return result.fetchone()[0]
