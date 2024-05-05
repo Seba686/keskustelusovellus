@@ -25,3 +25,18 @@
 <h3 class="empty">Täällä ei ole mitään. <a href="/new_thread">Luo uusi lanka</a>.</h3>
 {% endif %}
 {% endblock %}
+{% block sidebar %}
+<div class="sidebar">
+    <p>Aihe: {{ topic }}</a></p>
+    <p>Tätä aihetta seuraa {{ subscriber_count }} {% if subscriber_count == 1 %}käyttäjä{% else %}käyttäjää{% endif %}.</p>
+    {% if session.user_id %}
+    <p>{% if subscribed %}Seuraat aihetta.{% else %}Et seuraa aihetta{% endif %}</p>
+    <form action="/toggle_subscription" method="POST">
+        <input type="hidden" name="user" value="{{ session.user_id }}">
+        <input type="hidden" name="topic" value="{{ topic_id }}">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <input type="submit" value="{% if not subscribed %}Seuraa{% else %}Lopeta seuraaminen{% endif %}">
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

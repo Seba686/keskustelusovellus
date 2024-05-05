@@ -36,11 +36,7 @@
 {% if session.username %}
     <form action="/thread/{{ thread.id }}" method="POST">
         <span class="form">Lisää kommentti</span> <br>
-        <textarea spellcheck="false" name="content" rows="3", cols="40">
-            {% if errors %}
-                {{ comment_content }}
-            {% endif %}
-        </textarea>
+        <textarea spellcheck="false" name="content" rows="3", cols="40">{% if errors %}{{ comment_content }}{% endif %}</textarea>
         <br>
         <input type="submit" value="Lähetä">
         <input type="hidden" name="thread_id" value="{{ thread.id }}">
@@ -54,4 +50,19 @@
 {% else %}
 Kirjaudu sisään lisätäksesi kommentin.
 {% endif %}
+{% endblock %}
+{% block sidebar %}
+<div class="sidebar">
+    <p>Aihe: <a href="{{ url_for('topic', topic=thread.topic) }}">{{ thread.topic }}</a></p>
+    <p>Tätä aihetta seuraa {{ subscriber_count }} {% if subscriber_count == 1 %}käyttäjä{% else %}käyttäjää{% endif %}.</p>
+    {% if session.user_id %}
+    <p>{% if subscribed %}Seuraat aihetta.{% else %}Et seuraa aihetta{% endif %}</p>
+    <form action="/toggle_subscription" method="POST">
+        <input type="hidden" name="user" value="{{ session.user_id }}">
+        <input type="hidden" name="topic" value="{{ thread.topic_id }}">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <input type="submit" value="{% if not subscribed %}Seuraa{% else %}Lopeta seuraaminen{% endif %}">
+    </form>
+    {% endif %}
+</div>
 {% endblock %}

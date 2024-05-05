@@ -15,7 +15,7 @@ def get_threads():
 
 # Get specific thread. Called when the user opens the comment section.
 def get_thread(thread_id):
-    sql = text("SELECT T.id, A.topic, U.username, T.title, T.content, T.image, T.created FROM \
+    sql = text("SELECT T.id, T.topic_id, A.topic, U.username, T.title, T.content, T.image, T.created FROM \
                 threads T, users U, topics A WHERE T.user_id=U.id AND T.id=:id AND A.id=T.topic_id")
     result = db.session.execute(sql, {"id":thread_id})
     thread = result.fetchone()
@@ -93,23 +93,6 @@ def new_comment(thread_id, user_id, content):
         db.session.commit()
     return errors
 
-# Create new topic.
-def new_topic(topic):
-    errors = []
-    if len(topic) > 30:
-        errors.append("Aiheen enimmäispituus on 30 merkkiä.")
-    elif len(topic) < 3:
-        errors.append("Aiheen minimipituus on 3 merkkiä.")
-    sql = text("SELECT id FROM topics WHERE topic=:topic")
-    found = db.session.execute(sql, {"topic":topic}).fetchone()
-    if found:
-        errors.append("Aihe on jo luotu.")
-    if not errors:
-        sql = text("INSERT INTO topics (topic) VALUES (:topic)")
-        db.session.execute(sql, {"topic":topic})
-        db.session.commit()
-    return errors
-
 # Get threads associated with a topic. 
 def get_threads_by_topic(topic):
     sql = text("SELECT Th.id, U.username, Th.title, Th.content, Th.image, Th.created FROM \
@@ -118,13 +101,6 @@ def get_threads_by_topic(topic):
     result = db.session.execute(sql, {"topic":topic})
     threads = result.fetchall()
     return threads
-
-# Get all topics. Will be shown in topics.html.
-def get_topics():
-    result = db.session.execute(text("SELECT topic FROM topics"))
-    topics = result.fetchall()
-    topics = [topic[0] for topic in topics]
-    return topics
 
 # Verify that the file extension is supported. 
 def allowed_file(filename):

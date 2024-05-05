@@ -12,7 +12,9 @@ CREATE TABLE topics (
 CREATE TABLE subscriptions (
     id SERIAL PRIMARY KEY,
     topic_id INTEGER REFERENCES topics,
-    user_id INTEGER REFERENCES users
+    user_id INTEGER REFERENCES users,
+    subscribed BOOLEAN,
+    UNIQUE (topic_id, user_id)
 );
 
 CREATE TABLE threads (

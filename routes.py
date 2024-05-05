@@ -1,7 +1,7 @@
-from flask import render_template, request, redirect, session, url_for, abort
 from itertools import zip_longest
+from flask import render_template, request, redirect, session, url_for, abort
 from app import app
-import posts, users
+import posts, users, topic_handler
 
 @app.route("/")
 def index():
@@ -12,7 +12,7 @@ def index():
 def new_thread():
     if "username" not in session:
         return render_template("error.html")
-    topics = posts.get_topics()
+    topics = topic_handler.get_topics()
     if request.method == "GET":
         return render_template("new_thread.html", topics=topics)
     if session["csrf_token"] != request.form["csrf_token"]:
@@ -28,8 +28,8 @@ def new_thread():
     status = posts.new_thread(topic, user_id, title, content, image)
     if not status[0]:
         return redirect(url_for("thread", id=status[1]))
-    return render_template("new_thread.html", title=title, content=content, errors=status[0], topics=topics)
-
+    return render_template("new_thread.html", title=title, content=content,
+                           errors=status[0], topics=topics)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -38,12 +38,12 @@ def login():
     username = request.form["username"]
     password = request.form["password"]
     if users.verify_login(username, password):
-        return redirect("/") # TODO redirect to previous page
+        return redirect("/")
     return render_template("login.html", error=True)
         
 @app.route("/logout")
 def logout():
-    del session["username"]
+    users.logout()
     return redirect("/")
         
 @app.route("/register", methods=["GET", "POST"])
@@ -70,23 +70,46 @@ def thread(id):
     thread = posts.get_thread(id)
     comments = posts.get_comments(id)
     comment_count = posts.get_comment_count(id)
+    subscriber_count = topic_handler.get_subscriber_count(thread.topic_id)
+    if "username" in session:
+        subscribed = topic_handler.subscribed(thread.topic_id, session["user_id"])
+    else:
+        subscribed = False
     return render_template("thread.html", thread=thread, comments=comments,
                            errors=errors, comment_content=comment_content,
-                           comment_count=comment_count)
+                           comment_count=comment_count, subscriber_count=subscriber_count,
+                           subscribed=subscribed)
 
 @app.route("/topic/<string:topic>")
 def topic(topic):
     threads = posts.get_threads_by_topic(topic)
-    return render_template("topic.html", threads=threads, topic=topic)
+    topic_id = topic_handler.get_topic(topic)
+    subscriber_count = topic_handler.get_subscriber_count(topic_id.id)
+    if "username" in session:
+        subscribed = topic_handler.subscribed(topic_id.id, session["user_id"])
+    else:
+        subscribed = False
+    return render_template("topic.html", threads=threads, topic=topic,
+                           topic_id=topic_id.id, subscriber_count=subscriber_count,
+                           subscribed=subscribed)
 
 @app.route("/topics", methods=["GET", "POST"])
-def topics():
+def get_topics():
     errors = None
     if request.method =="POST":
         if session["csrf_token"] != request.form["csrf_token"]:
             abort(403)
         topic = request.form["topic"]
-        errors = posts.new_topic(topic)
-    topics = posts.get_topics()
+        errors = topic_handler.new_topic(topic)
+    topics = topic_handler.get_topics()
     topics = list(zip_longest(*(iter(topics), ) * 3)) # Convert list into list of 3-tuples
     return render_template("topics.html", errors=errors, topics=topics)
+
+@app.route("/toggle_subscription", methods=["POST"])
+def toggle_subscription():
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
+    topic_id = request.form["topic"]
+    user_id = request.form["user"]
+    topic_handler.toggle_subscription(topic_id, user_id)
+    return redirect(request.referrer)

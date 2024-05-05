@@ -3,16 +3,14 @@
 {% block content %}
 <form action="/new_thread" method="POST", enctype=multipart/form-data>
   <span class="form">Otsikko*</span> <br>
-  <textarea spellcheck="false" name="title" rows="3", cols="50" minlength="1" maxlength="120" required>
-    {{ title }}
-  </textarea>
+  <textarea spellcheck="false" name="title" rows="3", cols="50" minlength="1" maxlength="120" required>{{ title }}</textarea>
   <br>
   <span class="form">Aihe*</span>
   <br>
   <input list="topics" name="topic">
   <datalist id="topics">
     {% for topic in topics %}
-    <option value="{{ topic }}" />
+    <option value="{{ topic }}">
     {% endfor %}
   </datalist>
   <br>

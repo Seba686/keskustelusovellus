@@ -20,6 +20,12 @@ def verify_login(username, password):
         return True
     return False
 
+# Log user out.
+def logout():
+    del session["username"]
+    del session["user_id"]
+    del session["csrf_token"]
+
 # Register a new user.
 def register(username, password, confirm_password):
     errors = verify_registration(username, password, confirm_password)

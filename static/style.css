@@ -29,8 +29,10 @@ h2 {
 
 .content {
     margin: auto;
-    max-width: 50em;
+    width: 50em;
     padding: 2em 1em;
+    display: inline-block;
+    text-align: left;
 }
 
 .post {
@@ -158,8 +160,20 @@ table a {
 
 .sidebar {
     border-style: solid;
+    border-width: 2px;
+    border-radius: 10px;
+    display: inline-block;
+    vertical-align: top;
+    padding: 1em;
+    margin-top: 2em;
+    margin-left: 3em;
+    text-align: left;
 }
 
 .topic {
     text-decoration: none;
+}
+
+.page {
+    text-align: center;
 }
