@@ -7,7 +7,7 @@ import app
 
 # Get all threads. Newest thread first.
 def get_threads():
-    result = db.session.execute(text("SELECT Th.id, A.topic, U.username, Th.title, Th.content, \
+    result = db.session.execute(text("SELECT Th.id, A.topic, U.username, U.id user_id, Th.title, Th.content, \
                                      Th.image, Th.created FROM threads Th, users U, topics A WHERE \
                                      Th.user_id=U.id AND Th.topic_id=A.id ORDER BY Th.created DESC"))
     threads = result.fetchall()
@@ -15,7 +15,7 @@ def get_threads():
 
 # Get specific thread. Called when the user opens the comment section.
 def get_thread(thread_id):
-    sql = text("SELECT T.id, T.topic_id, A.topic, U.username, T.title, T.content, T.image, T.created FROM \
+    sql = text("SELECT T.id, T.topic_id, A.topic, U.username, U.id user_id, T.title, T.content, T.image, T.created FROM \
                 threads T, users U, topics A WHERE T.user_id=U.id AND T.id=:id AND A.id=T.topic_id")
     result = db.session.execute(sql, {"id":thread_id})
     thread = result.fetchone()
@@ -66,7 +66,7 @@ def verify_new_thread(topic, title, content, image):
 
 # Get comments associated with a thread.
 def get_comments(thread_id):
-    sql = text("SELECT U.username, C.content, C.created FROM \
+    sql = text("SELECT U.username, U.id user_id, C.content, C.created FROM \
                comments C, users U WHERE C.user_id=U.id AND C.thread_id=:id")
     result = db.session.execute(sql, {"id":thread_id})
     comments = result.fetchall()
@@ -74,7 +74,7 @@ def get_comments(thread_id):
 
 # Get number of comments.
 def get_comment_count(thread_id):
-    sql = text("SELECT COUNT(*) FROM comments WHERE thread_id=:id")
+    sql = text("SELECT COUNT(id) FROM comments WHERE thread_id=:id")
     result = db.session.execute(sql, {"id":thread_id})
     count = result.fetchone()[0]
     return count
@@ -95,7 +95,7 @@ def new_comment(thread_id, user_id, content):
 
 # Get threads associated with a topic. 
 def get_threads_by_topic(topic):
-    sql = text("SELECT Th.id, U.username, Th.title, Th.content, Th.image, Th.created FROM \
+    sql = text("SELECT Th.id, U.username, U.id user_id, Th.title, Th.content, Th.image, Th.created FROM \
                 threads Th, users U, topics A WHERE Th.user_id=U.id AND A.topic=:topic AND \
                 Th.topic_id=A.id ORDER BY Th.created DESC")
     result = db.session.execute(sql, {"topic":topic})
@@ -109,9 +109,26 @@ def allowed_file(filename):
 
 # Get posts with topics the user is subscribed to.
 def get_home_posts(user_id):
-    sql = text("SELECT * FROM (SELECT T.id, T.topic_id, A.topic, U.username, T.title, T.content, T.image, T.created \
+    sql = text("SELECT * FROM (SELECT T.id, T.topic_id, A.topic, U.username, U.id user_id, \
+               T.title, T.content, T.image, T.created \
                FROM threads T, users U, topics A WHERE T.user_id=U.id AND A.id=T.topic_id) AS A JOIN \
                (SELECT topic_id FROM subscriptions WHERE user_id=:user_id AND subscribed=TRUE) AS B \
                ON A.topic_id=B.topic_id ORDER BY A.created DESC")
+    result = db.session.execute(sql, {"user_id":user_id}).fetchall()
+    return result
+
+# Get all threads posted by a specific user.
+def get_user_threads(user_id):
+    sql = text("SELECT T.id, T.topic_id, A.topic, U.username, U.id user_id, T.title, T.content, T.image, \
+               T.created FROM threads T, users U, topics A WHERE T.user_id=:user_id AND T.topic_id=A.id \
+               AND U.id=:user_id ORDER BY T.created DESC")
+    result = db.session.execute(sql, {"user_id":user_id}).fetchall()
+    return result
+
+# Get all comments posted by a specific user.
+def get_user_comments(user_id):
+    sql = text("SELECT C.id, C.thread_id, U.username, U.id user_id, C.content, C.created \
+               FROM comments C, users U, threads T WHERE C.user_id=:user_id AND T.id=C.thread_id \
+               AND U.id=:user_id ORDER BY C.created DESC")
     result = db.session.execute(sql, {"user_id":user_id}).fetchall()
     return result

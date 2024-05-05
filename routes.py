@@ -121,3 +121,17 @@ def home():
     threads = posts.get_home_posts(session["user_id"])
     topic_count = topic_handler.get_topic_count(session["user_id"])
     return render_template("home.html", threads=threads, topic_count=topic_count)
+
+@app.route("/profile/<int:user_id>/threads")
+def profile_threads(user_id):
+    threads = posts.get_user_threads(user_id)
+    username = users.get_username(user_id)
+    return render_template("profile.html", threads=threads, is_thread=True,
+                           user_id=user_id, username=username)
+
+@app.route("/profile/<int:user_id>/comments")
+def profile_comments(user_id):
+    comments = posts.get_user_comments(user_id)
+    username = users.get_username(user_id)
+    return render_template("profile.html", comments=comments, is_thread=False,
+                           user_id=user_id, username=username)

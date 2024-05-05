@@ -54,9 +54,14 @@ def verify_registration(username, password, confirm_password):
         errors.append("Salasanan enimmäispituus on 100 merkkiä.")
     return errors
 
-# Get the user_id given a username.
+# Get user_id given a username.
 def get_user_id(username):
     sql = text("SELECT id FROM users WHERE username=:username")
-    result = db.session.execute(sql, {"username":username})
-    user = result.fetchone()
-    return user
+    result = db.session.execute(sql, {"username":username}).fetchone()[0]
+    return result
+
+# Get username given a user_id.
+def get_username(user_id):
+    sql = text("SELECT username FROM users WHERE id=:user_id")
+    result = db.session.execute(sql, {"user_id":user_id}).fetchone()[0]
+    return result

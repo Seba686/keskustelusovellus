@@ -7,9 +7,9 @@
     <h2>{{thread.title}}</h2>
     </div>
     <div class="post-meta">
-        <div>Aihe: <a class="topic" href="{{ url_for('topic', topic=thread.topic) }}">{{ thread.topic }}</a></div>
+        <div>Aihe: <a href="{{ url_for('topic', topic=thread.topic) }}">{{ thread.topic }}</a></div>
         <div class="time">{{ thread.created.strftime("%Y-%m-%d") }}</div>
-        <div class="user">{{ thread.username }}</div>
+        <div class="user"><a href="{{ url_for('profile_threads', user_id=thread.user_id) }}">{{ thread.username }}</a></div>
     </div>
     <div class="post-content">
         {% if thread.image %}

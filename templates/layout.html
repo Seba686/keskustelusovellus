@@ -18,7 +18,7 @@
         <a href="/home">Omat</a>
         <a href="/new_thread">Uusi lanka</a>
         <a href="/logout">Kirjaudu ulos</a>
-        <a href="#profile">{{ session.username }}</a> <!--TODO: Add profiles page-->
+        <a href="{{ url_for('profile_threads', user_id=session.user_id) }}">{{ session.username }}</a>
         {% else %}
         <a href="/login">Kirjaudu sisään</a>
         {% endif %}
