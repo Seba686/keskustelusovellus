@@ -8,15 +8,15 @@ import app
 # Get all threads. Newest thread first.
 def get_threads():
     result = db.session.execute(text("SELECT Th.id, A.topic, U.username, U.id user_id, Th.title, Th.content, \
-                                     Th.image, Th.created FROM threads Th, users U, topics A WHERE \
-                                     Th.user_id=U.id AND Th.topic_id=A.id ORDER BY Th.created DESC"))
+                                     Th.image, Th.created FROM threads Th JOIN users U ON \
+                                     Th.user_id=U.id JOIN topics A ON Th.topic_id=A.id ORDER BY Th.created DESC"))
     threads = result.fetchall()
     return threads
 
 # Get specific thread. Called when the user opens the comment section.
 def get_thread(thread_id):
-    sql = text("SELECT T.id, T.topic_id, A.topic, U.username, U.id user_id, T.title, T.content, T.image, T.created FROM \
-                threads T, users U, topics A WHERE T.user_id=U.id AND T.id=:id AND A.id=T.topic_id")
+    sql = text("SELECT T.id, T.topic_id, A.topic, U.username, U.id user_id, T.title, T.content, T.image, \
+               T.created FROM threads T, users U, topics A WHERE T.user_id=U.id AND T.id=:id AND A.id=T.topic_id")
     result = db.session.execute(sql, {"id":thread_id})
     thread = result.fetchone()
     return thread
@@ -35,7 +35,7 @@ def new_thread(topic, user_id, title, content, image):
         else:
             filename = None
         sql = text("INSERT INTO threads (topic_id, user_id, title, content, image, created) \
-                VALUES (:topic_id, :user_id, :title, :content, :image, NOW()) RETURNING id")
+                    VALUES (:topic_id, :user_id, :title, :content, :image, NOW()) RETURNING id")
         result = db.session.execute(sql, {"topic_id":topic_id, "user_id":user_id, "title":title, \
                                           "content":content, "image":filename})
         db.session.commit()
@@ -66,8 +66,8 @@ def verify_new_thread(topic, title, content, image):
 
 # Get comments associated with a thread.
 def get_comments(thread_id):
-    sql = text("SELECT U.username, U.id user_id, C.content, C.created FROM \
-               comments C, users U WHERE C.user_id=U.id AND C.thread_id=:id")
+    sql = text("SELECT U.username, U.id user_id, C.content, C.created FROM comments C, \
+               users U WHERE C.user_id=U.id AND C.thread_id=:id ORDER BY C.created DESC")
     result = db.session.execute(sql, {"id":thread_id})
     comments = result.fetchall()
     return comments
