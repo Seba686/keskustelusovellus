@@ -57,7 +57,7 @@ def verify_registration(username, password, confirm_password):
 # Get user_id given a username.
 def get_user_id(username):
     sql = text("SELECT id FROM users WHERE username=:username")
-    result = db.session.execute(sql, {"username":username}).fetchone()[0]
+    result = db.session.execute(sql, {"username":username}).fetchone()
     return result
 
 # Get username given a user_id.
