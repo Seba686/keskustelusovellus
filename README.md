@@ -6,20 +6,11 @@ Käyttäjä voi kirjautua sisään ja ulos sekä luoda uuden tunnuksen.
 
 Sovelluksen etusivulla näkyy lankoja eri aiheista. Käyttäjä voi lisätä kommentin lankaan.
 
-Jokaisella langalla on otsikko ja aihe. Lisäksi langassa voi olla tekstiä, linkki tai kuva.
+Jokaisella langalla on otsikko ja aihe. Lisäksi langassa voi olla tekstiä tai kuva.
 
-Käyttäjä voi äänestää lankoja sekä kommentteja ylös tai alas.
+Käyttäjillä on profiilit jossa näkyy käyttäjän langat ja kommentit.
 
-Käyttäjä voi muokata oman langan tai kommentin sisältöä.
-
-Käyttäjä voi etsiä lankoja tai kommentteja annetun sanan perusteella. Lankoja voi myös etsiä aiheittain.
-
-Ylläpitäjä voi poistaa lankoja sekä kommentteja.
-
-# Toteutetut ominaisuudet:
-Langat ja kommentit, kuvan lisääminen lankaan, aiheet.
-
-Tavallisen käyttäjän tunnuksen luominen sekä sisäänkirjautuminen ja uloskirjautuminen.
+Aiheita voi seurata. Omat sivulla näkyy lankoja käyttäjän seuraamilta aiheilta.
 
 # Käynnistysohjeet
 Kloona repositiorio ja luo kansioon .env tiedosto jonka sisältö on seuraavanlainen:
